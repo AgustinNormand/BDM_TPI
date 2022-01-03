@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT [ "python", "-u", "./htmlparser.py" ]
+ENTRYPOINT [ "python", "-u", "./html_description_parser.py" ]

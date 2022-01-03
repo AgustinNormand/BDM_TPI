@@ -5,6 +5,7 @@ import sys
 import csv
 from google.cloud import storage
 from bs4 import BeautifulSoup
+import gzip
 
 # Caso 1. Se hizo la petición, 200OK, Tenia spec table.
 # Caso 2. Se hizo la petición, 200OK, No tenía spec table, tenía botón ver más, se consultó al anchor, y tenía spec table.
@@ -69,7 +70,7 @@ def contains_specs_table(request_text):
   try:
     soup = BeautifulSoup(request_text, 'html.parser')
     div = soup.find_all("div", {"class":"ui-pdp-specs"})[0]
-    table = div.find_all("div", {"class":"ui-pdp-specs__table"})[0]
+    div.find_all("div", {"class":"ui-pdp-specs__table"})[0]
     result = True
   except Exception as e:
     result = False
@@ -84,8 +85,8 @@ workers = int(sys.argv[1]) #Cantidad de workers realizando peticiones
 worker_number = int(sys.argv[2]) #Numero de worker que esta ejecutando este código
 
 bucket_name = "bdm-unlu"
-file_name = "dataset.csv"
-blob_path = "attributes/{}".format(file_name)
+file_name = "trimmed_dataset_cf.csv"
+blob_path = "dataset_trimmer/{}".format(file_name)
 responses_file_name = "responses_{}.pkl".format(worker_number)
 responses_blob_path = "html_scrapper/{}".format(responses_file_name)
 
@@ -99,7 +100,7 @@ print("Worker number arranca desde 0")
 print("Workers: {}, Worker Number: {}".format(workers, worker_number))
   
 permalinks = []
-with open('dataset.csv', newline='') as csvfile:
+with open(file_name, newline='') as csvfile:
   reader = csv.DictReader(csvfile)
   for row in reader:
     permalinks.append(row['permalink'])
@@ -113,16 +114,21 @@ finish_interval = start_interval + worker_size
 
 print("Worker interval Start: {}, Finish {}".format(start_interval, finish_interval))
 
-permalinks_worker = permalinks[start_interval:finish_interval]
+if (worker_number + 1) == workers:
+  # Es el ultimo worker, agarro desde el start_interval hasta el final
+  permalinks_worker = permalinks[start_interval:]
+else:
+  permalinks_worker = permalinks[start_interval:finish_interval]
 
 print("Permalinks Worker Len {}".format(len(permalinks_worker)))
 
-open_file = open(responses_file_name, "wb")
+open_file = gzip.GzipFile(responses_file_name, 'wb')
 
 permalinks_with_errors = []
 
 requests_done = 0
 error_count = 0
+
 
 for permalink in permalinks_worker:
   try:
@@ -137,7 +143,23 @@ open_file.close()
   
 blob = bucket.blob(responses_blob_path)
 
-blob.upload_from_filename(responses_file_name)
+def upload_blob(blob, responses_file_name):
+  uploaded = False
+  try:
+    blob.upload_from_filename(responses_file_name)
+    uploaded = True
+  except Exception as e:
+    print("Upload try failed.")
+    print("Exception [({})]".format(e))
+  return uploaded
+
+uploaded_flag = False
+while not uploaded_flag:
+  print("Trying to upload blob")
+  uploaded_flag = upload_blob(blob, responses_file_name)
+  if not uploaded_flag:
+    time.sleep(60)
+
 
 
 
