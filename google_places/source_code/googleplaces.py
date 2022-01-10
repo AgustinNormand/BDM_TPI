@@ -9,7 +9,7 @@ import queue
 from threading import Thread
 
 
-api_key = "AIzaSyAXGKVsLpRsDJitNvZCFfowsV0oZ8sRO88"
+api_key = ""
 
 def build_places_url(lat, long, a_type):
   return f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{long}&radius=500&type={a_type}&key={api_key}"
@@ -27,44 +27,59 @@ def build_extra_results_places_url(token):
 
 
 def build_establishments(response):
-#  if ("next_page_token" in response):    
-#    request_count = 0
-#    next_page_url = build_extra_results_places_url(response["next_page_token"])    
-#    time.sleep(1)                                 
-#    next_page = requests.get(next_page_url).json()
-#    while(next_page["status"] == "INVALID_REQUEST" and request_count < 10):
-#      time.sleep(1)
-#      next_url = next_page_url + "&request_count=" + str(request_count) # We add the request count to the query in order to avoid caching
-#      next_page = requests.get(next_url).json() 
-#      request_count += 1
-#    return response["results"] + build_establishments(next_page)  
-#  else: 
-  return response["results"]
+  if ("next_page_token" in response):    
+    request_count = 0
+    next_page_url = build_extra_results_places_url(response["next_page_token"])    
+    time.sleep(1)                                 
+    next_page = requests.get(next_page_url).json()
+    while(next_page["status"] == "INVALID_REQUEST" and request_count < 10):
+      time.sleep(1)
+      next_url = next_page_url + "&request_count=" + str(request_count) # We add the request count to the query in order to avoid caching
+      next_page = requests.get(next_url).json() 
+      request_count += 1
+    return response["results"] + build_establishments(next_page)  
+  else: 
+    return response["results"]
 
 def perform_web_requests(addresses, no_workers):
+
+    class Printer(Thread):
+      def __init__(self, out_queue):
+            Thread.__init__(self)
+            self.out_queue = out_queue
+
+      def run(self):
+            while True:
+                content = self.out_queue.get()
+                append_to_file(content)
+                self.out_queue.task_done()
+
     class Worker(Thread):
-        def __init__(self, request_queue):
+        def __init__(self, request_queue, worker_number, out_queue):
             Thread.__init__(self)
             self.queue = request_queue
             self.errors = []
             self.counter = 0
+            self.worker_number = worker_number
+            self.out_queue = out_queue
 
         def run(self):
             while True:
                 content = self.queue.get()
-                if content == "":
-                    break
-                #for url in content[1]:
-                url = content[1]
+
                 try:
-                  response = requests.get(url).json()
-                  establishments = build_establishments(response)                  
+                  response = requests.get(content[1])
+                  if response.status_code != 200:
+                    print("Status code != 200")
+                  establishments = build_establishments(response.json())  
+
+                  if self.worker_number == 0:
+                    print("Worker 0 doing request number {} Establishments len {}. Status Code {}.".format(content[2], len(establishments), response.status_code))
+
+                  self.out_queue.put([content[0], establishments])
                   self.counter += 1
-                  if (self.counter % 100 == 0):
-                    print(f"100 permalinks consultados. Counter: {self.counter}")
-                  append_to_file(content[0], establishments)
                 except Exception as e:
-                  print(f"Error generando consulta {e} para url {url}")
+                  print("Error generando consulta {} para url {}".format(e, url))
                   self.errors.append([e, content[0], url])
                 self.queue.task_done()
 
@@ -72,31 +87,23 @@ def perform_web_requests(addresses, no_workers):
     for url in addresses:
         q.put(url)
 
-    workers = []
-    for _ in range(no_workers):
-        worker = Worker(q)
+    q_out = queue.Queue()
+
+    for worker_number in range(no_workers):
+        worker = Worker(q, worker_number, q_out)
+        worker.setDaemon(True)
         worker.start()
-        workers.append(worker)
 
-    for _ in workers:
-        q.put("")
+    p = Printer(q_out)
+    p.setDaemon(True)
+    p.start()
 
-    for worker in workers:
-        worker.join()
-
-    e = []
-    record_count = 0
-    for worker in workers:
-        e.extend(worker.errors)
-        record_count += worker.counter
-
-    return [e, record_count]
+    q.join()
+    q_out.join()
 
 
-## Funciones para guardar el trabajo de los workers
-def append_to_file(permalink, response):
-  pickle.dump([permalink, response], open_file)
-
+def append_to_file(response):
+  pickle.dump(response, open_file)
 
 workers = int(sys.argv[1]) #Cantidad de workers realizando peticiones
 worker_number = int(sys.argv[2]) #Numero de worker que esta ejecutando este código
@@ -122,11 +129,10 @@ included_types = "hospital", "restaurant", "park", "subway_station", "bus_statio
 
 with open(file_name, newline='') as csvfile:
   reader = csv.DictReader(csvfile)
+  counter = 0
   for row in reader:
-    #urls = []
-    #for a_type in included_types:
-    # urls.append(build_places_url(row['latitude'], row['longitude'], a_type))     
-    data.append([row['permalink'], build_places_url(row['latitude'], row['longitude'])])
+    data.append([row['permalink'], build_places_url(row['latitude'], row['longitude']), counter])
+    counter += 1
 
 print("Data len {}".format(len(data)))
 
@@ -147,15 +153,8 @@ print("Data Worker Len {}".format(len(worker_data)))
 
 open_file = gzip.GzipFile(responses_file_name, 'wb')
 
-entry_with_errors = []
+perform_web_requests(worker_data, 5)
 
-requests_done = 0
-error_count = 0
-
-errors, record_count = perform_web_requests(worker_data, 25)
-
-print("data_with_errors: {}".format(entry_with_errors))
-  
 open_file.close()
   
 blob = bucket.blob(responses_blob_path)
