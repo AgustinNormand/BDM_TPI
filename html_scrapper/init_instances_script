@@ -30,7 +30,7 @@ newgrp docker
 
 POST
 
-sudo chmod 777 script.sh && ./script.sh
+sudo chmod 777 s.sh && ./s.sh
 
 docker ps
 
