@@ -7,7 +7,7 @@ import gzip
 
 worker_number = int(sys.argv[1]) #Numero de worker que esta ejecutando este código
 
-bucket_name = "bdm-unlu"
+bucket_name = "bdm-unlu-rerun"
 responses_file_name = "responses_{}.pkl".format(worker_number)
 responses_blob_path = "html_scrapper/{}".format(responses_file_name)
 
