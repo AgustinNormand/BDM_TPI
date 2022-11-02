@@ -23,12 +23,12 @@ class Resources_Processor():
         start_time = time.time()
         logging.info("Resources ampliated len: {}, Execution time: {}".format(len(self.resources), time.time() - start_time))
 
-        #start_time = time.time()
-        #self.resources = self.ampliate_resources_with("price")
-        #logging.info("Resources re-ampliated len: {}, , Execution time: {}".format(len(self.resources), time.time() - start_time))
+        start_time = time.time()
+        self.resources = self.ampliate_resources_with("price")
+        logging.info("Resources re-ampliated len: {}, , Execution time: {}".format(len(self.resources), time.time() - start_time))
 
-        #start_time = time.time()
-        #logging.info("Trimmer Count: {}, Execution Time: {}".format(self.verify_paging(), time.time() - start_time))
+        start_time = time.time()
+        logging.info("Trimmer Count: {}, Execution Time: {}".format(self.verify_paging(), time.time() - start_time))
 
         self.publish_resources()
 
