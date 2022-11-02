@@ -1,6 +1,7 @@
-from resources import Resources_Processor
-
+from Pipeline.resources.Resources_Processor.resources import Resources_Processor
 import time
+import logging
+
 start_time = time.time()
 Resources_Processor()
-print("--- %s seconds ---" % (time.time() - start_time))
+logging.info("Total Service Execution Time: {}".format(time.time() - start_time))

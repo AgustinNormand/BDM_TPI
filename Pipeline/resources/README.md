@@ -4,3 +4,6 @@ pip install --upgrade google-cloud-pubsub
 
 3.3 minutos sin workers
 En ampliar los resources y verificar los paging
+
+40 segundos con workers
+En ampliar los resources y verificar los paging
