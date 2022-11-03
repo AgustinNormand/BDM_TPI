@@ -2,7 +2,7 @@ import json
 from google.auth import jwt
 from google.cloud import pubsub_v1
 
-service_account_info = json.load(open("./gcp_credential.json"))
+service_account_info = json.load(open("../resources/Resources_Processor/gcp_credential.json"))
 audience = "https://pubsub.googleapis.com/google.pubsub.v1.Subscriber"
 
 credentials = jwt.Credentials.from_service_account_info(

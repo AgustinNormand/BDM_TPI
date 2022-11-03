@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import os.path
+
 import requests
 from dotenv import dotenv_values
-import os.path
-import logging
+
 
 class Meli_Autenticator:
     def __init__(self, fresh_start=False):

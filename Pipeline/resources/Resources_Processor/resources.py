@@ -1,23 +1,26 @@
-from Pipeline.resources.Meli_Autenticator.meli_autenticator import Meli_Autenticator
-from Pipeline.resources.Resources_Processor.worker_paging_verificator import WorkerPagingVerificator
-from Pipeline.resources.Resources_Processor.worker_resource_ampliator import WorkerResourceAmpliator
-
-import logging
-import requests
-import time
-import queue
 import json
+import logging
+import queue
+import time
+
 from google.auth import jwt
 from google.cloud import pubsub_v1
+
+from Resources_Processor.worker_paging_verificator import WorkerPagingVerificator
+from Resources_Processor.worker_resource_ampliator import WorkerResourceAmpliator
+from Meli_Autenticator.meli_autenticator import Meli_Autenticator
+
 
 class Resources_Processor():
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
         ma = Meli_Autenticator(fresh_start=False)
         self.headers = {"Authorization": "Bearer {}".format(ma.get_access_token())}
-        self.resources = []
-        self.resources.append('https://api.mercadolibre.com/sites/MLA/search?category=MLA1459&PROPERTY_TYPE=242062&OPERATION=242075&state=TUxBUENBUGw3M2E1')
 
+    def start_brand_new(self):
+        self.resources = []
+        self.resources.append(
+            'https://api.mercadolibre.com/sites/MLA/search?category=MLA1459&PROPERTY_TYPE=242062&OPERATION=242075&state=TUxBUENBUGw3M2E1')
         self.resources = self.ampliate_resources_with("neighborhood")
 
         start_time = time.time()
@@ -88,7 +91,7 @@ class Resources_Processor():
 
         topic_name = 'projects/{project_id}/topics/{topic}'.format(
             project_id="cryptic-opus-335323",
-            topic='bdm',
+            topic='resources',
         )
 
         publisher = pubsub_v1.PublisherClient(credentials=credentials_pub)

@@ -1,7 +1,19 @@
-from Pipeline.resources.Resources_Processor.resources import Resources_Processor
+from Resources_Processor.resources import Resources_Processor
 import time
 import logging
+from flask import Flask
 
-start_time = time.time()
-Resources_Processor()
-logging.info("Total Service Execution Time: {}".format(time.time() - start_time))
+app = Flask(__name__)
+
+rp = Resources_Processor()
+
+@app.route("/start-brand-new")
+def start_brand_new():
+    rp.start_brand_new()
+
+@app.route("/")
+def index():
+    return "Resources Service"
+
+if __name__ == '__main__':
+    app.run(debug=False, host="0.0.0.0")

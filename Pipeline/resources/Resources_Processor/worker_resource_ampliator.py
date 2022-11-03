@@ -1,6 +1,8 @@
-from threading import Thread
 import logging
+from threading import Thread
+
 import requests
+
 
 class WorkerResourceAmpliator(Thread):
     def __init__(self, request_queue, headers, key):
