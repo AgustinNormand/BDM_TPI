@@ -13,12 +13,6 @@ class Query_Processor():
     def __init__(self):
         logging.basicConfig(level=logging.ERROR)
         self.logger = logging.getLogger('QueryLogger')
-        #service_account_info = json.load(open("./gcp_credential.json"))
-        #audience = "https://pubsub.googleapis.com/google.pubsub.v1.Subscriber"
-
-        #credentials = jwt.Credentials.from_service_account_info(
-        #    service_account_info, audience=audience
-        #)
 
         self.subscriber = pubsub_v1.SubscriberClient()
         self.publisher = pubsub_v1.PublisherClient()
@@ -37,20 +31,9 @@ class Query_Processor():
 
         self.headers = {"Authorization": "Bearer {}".format(ma.get_access_token())}
 
-        #self.redis_client = redis.Redis(host='10.143.7.155', port=6379, db=0)
-
-        #self.verify_redis_connection()
-
         self.rp = Records_Processor(self.logger)
 
         self.loop()
-
-    #def verify_redis_connection(self):
-    #    self.logger.info("Verifying redis connection")
-    #    self.redis_client.set('connection-test-key', 'hello-world')
-    #    value = self.redis_client.get('connection-test-key')
-    #    if value == b'hello-world':
-    #        self.logger.info("Redis connected")
 
     def new_message_callback(self, message):
         self.logger.info("New message {}".format(message))
@@ -94,16 +77,7 @@ class Query_Processor():
         encoding = 'utf-8'
         results = self.get_results(resource)
         processed_results = self.rp.process_results(results)
-        #duplicated_count = 0
         for processed_result in processed_results:
-            #permalink = processed_result["permalink"]
-            #if self.redis_client.exists(permalink) == 0:
-                #for key in processed_result:
-                #    self.redis_client.hset(permalink, key, str(processed_result[key]))
             json_object = json.dumps(processed_result)
             future = self.publisher.publish(self.publish_topic, json_object.encode(encoding))
             future.result()
-            #else:
-                #duplicated_count += 1
-        #self.logger.info("Duplicated Count {} for resource {}".format(duplicated_count, resource))
-
