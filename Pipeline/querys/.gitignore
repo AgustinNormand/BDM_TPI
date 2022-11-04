@@ -1,2 +1,3 @@
-./gcp_credential.json
-
+Meli_Autenticator/.env
+Meli_Autenticator/access_token.txt
+Meli_Autenticator/refresh_token.txt
