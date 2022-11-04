@@ -10,6 +10,7 @@ rp = Resources_Processor()
 @app.route("/start-brand-new")
 def start_brand_new():
     rp.start_brand_new()
+    return "Executed"
 
 @app.route("/")
 def index():

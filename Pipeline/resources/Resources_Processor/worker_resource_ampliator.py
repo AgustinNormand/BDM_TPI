@@ -11,6 +11,7 @@ class WorkerResourceAmpliator(Thread):
         self.queue = request_queue
         self.headers = headers
         self.ampliated_resources = []
+        self.record_paging_count = 0
 
     def get_values(self, available_filters, key):
         for filter in available_filters:

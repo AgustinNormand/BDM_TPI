@@ -10,6 +10,7 @@ class WorkerPagingVerificator(Thread):
         self.queue = request_queue
         self.headers = headers
         self.trimmer_count = 0
+        self.record_paging_count = 0
 
     def run(self):
         while True:
@@ -19,8 +20,10 @@ class WorkerPagingVerificator(Thread):
             try:
                 limited_resource = "{}&limit=0&offset=0".format(resource)
                 response = requests.get(limited_resource, headers=self.headers).json()
-                if response["paging"]["total"] > 4000:
+                total_paging = response["paging"]["total"]
+                if total_paging > 4000:
                     self.trimmer_count += 1
+                self.record_paging_count += total_paging
 
             except Exception as e:
                 logging.error("Exception: {}, Resource: {}".format(e, resource))

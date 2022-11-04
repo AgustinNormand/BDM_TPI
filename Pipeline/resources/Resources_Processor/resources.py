@@ -14,10 +14,10 @@ from Meli_Autenticator.meli_autenticator import Meli_Autenticator
 class Resources_Processor():
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
-        ma = Meli_Autenticator(fresh_start=False)
-        self.headers = {"Authorization": "Bearer {}".format(ma.get_access_token())}
+        self.ma = Meli_Autenticator(fresh_start=False)
 
     def start_brand_new(self):
+        self.headers = {"Authorization": "Bearer {}".format(self.ma.get_access_token())}
         self.resources = []
         self.resources.append(
             'https://api.mercadolibre.com/sites/MLA/search?category=MLA1459&PROPERTY_TYPE=242062&OPERATION=242075&state=TUxBUENBUGw3M2E1')
@@ -31,7 +31,8 @@ class Resources_Processor():
         logging.info("Resources re-ampliated len: {}, , Execution time: {}".format(len(self.resources), time.time() - start_time))
 
         start_time = time.time()
-        logging.info("Trimmer Count: {}, Execution Time: {}".format(self.verify_paging(), time.time() - start_time))
+        trimmer_count, total_pagings_acumulator = self.verify_paging()
+        logging.info("Trimmer Count: {}, Paging Sum: {}, Execution Time: {}".format(trimmer_count, total_pagings_acumulator, time.time() - start_time))
 
         self.publish_resources()
 
@@ -75,9 +76,11 @@ class Resources_Processor():
             worker.join()
 
         trimmer_count = 0
+        records_count = 0
         for worker in workers:
             trimmer_count += worker.trimmer_count
-        return trimmer_count
+            records_count += worker.record_paging_count
+        return [trimmer_count, records_count]
 
     def publish_resources(self):
         service_account_info = json.load(open("./Resources_Processor/gcp_credential.json"))

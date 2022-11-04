@@ -1,0 +1,425 @@
+{
+  'id': 'MLA1134086576',
+  'site_id': 'MLA',
+  'title': '4 Ambientes Con Patio Y Balcón | Amenities | Nocito',
+  'seller': {
+    'id': 1105772700,
+    'permalink': 'http://perfil.mercadolibre.com.ar/NOCITO+CONSTRUCTORA.',
+    'registration_date': '2022-04-12T10:25:41.000-04:00',
+    'car_dealer': False,
+    'real_estate_agency': True,
+    'tags': [
+      'real_estate_agency',
+      'nsm_medium',
+      'mshops',
+      'messages_as_seller'
+    ],
+    'home_image_url': 'https://http2.mlstatic.com/storage/vis-accounts/1105772700_home-c944ccdf-5658-4343-afdd-d8254795739d.png',
+    'seller_reputation': {
+      'power_seller_status': None,
+      'level_id': None,
+      'metrics': {
+        'cancellations': {
+          'period': '365 days',
+          'rate': 0,
+          'value': 0
+        },
+        'claims': {
+          'period': '365 days',
+          'rate': 0,
+          'value': 0
+        },
+        'delayed_handling_time': {
+          'period': '365 days',
+          'rate': 0,
+          'value': 0
+        },
+        'sales': {
+          'period': '365 days',
+          'completed': 0
+        }
+      },
+      'transactions': {
+        'canceled': 0,
+        'period': 'historic',
+        'total': 0,
+        'ratings': {
+          'negative': 0,
+          'neutral': 0,
+          'positive': 0
+        },
+        'completed': 0
+      }
+    }
+  },
+  'price': 163600,
+  'prices': {
+    'id': 'MLA1134086576',
+    'prices': [
+      {
+        'id': '2',
+        'type': 'standard',
+        'amount': 163600,
+        'regular_amount': None,
+        'currency_id': 'USD',
+        'last_updated': '2022-05-05T20:44:49Z',
+        'conditions': {
+          'context_restrictions': [],
+          'start_time': None,
+          'end_time': None,
+          'eligible': True
+        },
+        'exchange_rate_context': 'DEFAULT',
+        'metadata': {}
+      }
+    ],
+    'presentation': {
+      'display_currency': 'USD'
+    },
+    'payment_method_prices': [],
+    'reference_prices': [
+      {
+        'id': '3',
+        'type': 'min_standard',
+        'conditions': {
+          'context_restrictions': [
+            'channel_marketplace'
+          ],
+          'start_time': None,
+          'end_time': None,
+          'eligible': True
+        },
+        'amount': 160300,
+        'currency_id': 'USD',
+        'exchange_rate_context': 'DEFAULT',
+        'tags': [],
+        'last_updated': '2022-05-05T20:44:49Z'
+      }
+    ],
+    'purchase_discounts': []
+  },
+  'sale_price': None,
+  'currency_id': 'USD',
+  'available_quantity': 1,
+  'sold_quantity': 0,
+  'buying_mode': 'classified',
+  'listing_type_id': 'gold_premium',
+  'stop_time': '2022-11-26T16:17:19.000Z',
+  'condition': 'new',
+  'permalink': 'https://departamento.mercadolibre.com.ar/MLA-1134086576-4-ambientes-con-patio-y-balcon-amenities-nocito-_JM',
+  'thumbnail': 'http://http2.mlstatic.com/D_798970-MLA49782940156_042022-I.jpg',
+  'thumbnail_id': '798970-MLA49782940156_042022',
+  'accepts_mercadopago': False,
+  'installments': None,
+  'address': {
+    'state_id': 'TUxBUENBUGw3M2E1',
+    'state_name': 'Capital Federal',
+    'city_id': 'TUxBQ0NBUGZlZG1sYQ',
+    'city_name': 'Capital Federal',
+    'area_code': '',
+    'phone1': ''
+  },
+  'promotions': None,
+  'shipping': {
+    'free_shipping': False,
+    'mode': 'not_specified',
+    'tags': [],
+    'logistic_type': 'not_specified',
+    'store_pick_up': False
+  },
+  'seller_address': {
+    'id': '',
+    'comment': '',
+    'address_line': '',
+    'zip_code': '',
+    'country': {
+      'id': 'AR',
+      'name': 'Argentina'
+    },
+    'state': {
+      'id': 'AR-C',
+      'name': 'Capital Federal'
+    },
+    'city': {
+      'id': 'TUxBQlZJTDc4MDda',
+      'name': 'Villa del Parque'
+    },
+    'latitude': '',
+    'longitude': ''
+  },
+  'seller_contact': {
+    'contact': '',
+    'other_info': '',
+    'area_code': '',
+    'phone': '',
+    'area_code2': '',
+    'phone2': '',
+    'email': '',
+    'webpage': ''
+  },
+  'location': {
+    'address_line': 'Alejandro Magariños Cervantes 1951, Buenos Aires, 1951',
+    'zip_code': '',
+    'subneighborhood': None,
+    'neighborhood': {
+      'id': 'TUxBQlZJTDI1ODla',
+      'name': 'Villa Gral. Mitre'
+    },
+    'city': {
+      'id': 'TUxBQ0NBUGZlZG1sYQ',
+      'name': 'Capital Federal'
+    },
+    'state': {
+      'id': 'TUxBUENBUGw3M2E1',
+      'name': 'Capital Federal'
+    },
+    'country': {
+      'id': 'AR',
+      'name': 'Argentina'
+    },
+    'latitude': -34.607365,
+    'longitude': -58.46816
+  },
+  'attributes': [
+    {
+      'id': 'HAS_AIR_CONDITIONING',
+      'name': 'Aire acondicionado',
+      'value_name': 'Sí',
+      'value_struct': None,
+      'values': [
+        {
+          'id': '242085',
+          'name': 'Sí',
+          'struct': None,
+          'source': 6316276763983939
+        }
+      ],
+      'attribute_group_id': 'COMOYAMEN',
+      'attribute_group_name': 'Comodidades y amenities',
+      'source': 6316276763983939,
+      'value_id': '242085',
+      'value_type': 'boolean'
+    },
+    {
+      'source': 1572,
+      'value_type': 'boolean',
+      'id': 'HAS_TELEPHONE_LINE',
+      'name': 'Línea telefónica',
+      'value_id': '242084',
+      'value_name': 'No',
+      'values': [
+        {
+          'id': '242084',
+          'name': 'No',
+          'struct': None,
+          'source': 1572
+        }
+      ],
+      'value_struct': None,
+      'attribute_group_id': 'COMOYAMEN',
+      'attribute_group_name': 'Comodidades y amenities'
+    },
+    {
+      'attribute_group_id': 'FIND',
+      'attribute_group_name': 'Ficha técnica',
+      'source': 6316276763983939,
+      'id': 'BEDROOMS',
+      'name': 'Dormitorios',
+      'values': [
+        {
+          'id': None,
+          'name': '3',
+          'struct': None,
+          'source': 6316276763983939
+        }
+      ],
+      'value_type': 'number',
+      'value_id': None,
+      'value_name': '3',
+      'value_struct': None
+    },
+    {
+      'id': 'COVERED_AREA',
+      'value_id': None,
+      'values': [
+        {
+          'id': None,
+          'name': '80 m²',
+          'struct': {
+            'number': 80,
+            'unit': 'm²'
+          },
+          'source': 6316276763983939
+        }
+      ],
+      'attribute_group_name': 'Ficha técnica',
+      'source': 6316276763983939,
+      'value_type': 'number_unit',
+      'name': 'Superficie cubierta',
+      'value_name': '80 m²',
+      'value_struct': {
+        'number': 80,
+        'unit': 'm²'
+      },
+      'attribute_group_id': 'FIND'
+    },
+    {
+      'value_id': None,
+      'value_struct': None,
+      'attribute_group_name': 'Ficha técnica',
+      'source': 7398128016960827,
+      'id': 'FULL_BATHROOMS',
+      'name': 'Baños',
+      'value_name': '2',
+      'values': [
+        {
+          'id': None,
+          'name': '2',
+          'struct': None,
+          'source': 7398128016960827
+        }
+      ],
+      'attribute_group_id': 'FIND',
+      'value_type': 'number'
+    },
+    {
+      'id': 'ROOMS',
+      'value_id': None,
+      'attribute_group_id': 'FIND',
+      'attribute_group_name': 'Ficha técnica',
+      'source': 6316276763983939,
+      'name': 'Ambientes',
+      'value_name': '4',
+      'value_struct': None,
+      'values': [
+        {
+          'id': None,
+          'name': '4',
+          'struct': None,
+          'source': 6316276763983939
+        }
+      ],
+      'value_type': 'number'
+    },
+    {
+      'id': 'TOTAL_AREA',
+      'value_id': None,
+      'attribute_group_id': 'FIND',
+      'attribute_group_name': 'Ficha técnica',
+      'source': 6316276763983939,
+      'name': 'Superficie total',
+      'value_name': '89 m²',
+      'value_struct': {
+        'number': 89,
+        'unit': 'm²'
+      },
+      'values': [
+        {
+          'name': '89 m²',
+          'struct': {
+            'number': 89,
+            'unit': 'm²'
+          },
+          'source': 6316276763983939,
+          'id': None
+        }
+      ],
+      'value_type': 'number_unit'
+    },
+    {
+      'value_name': 'Venta',
+      'value_struct': None,
+      'attribute_group_id': 'MAIN',
+      'attribute_group_name': 'Principales',
+      'source': 1,
+      'value_id': '242075',
+      'name': 'Operación',
+      'values': [
+        {
+          'id': '242075',
+          'name': 'Venta',
+          'struct': None,
+          'source': 1
+        }
+      ],
+      'value_type': 'list',
+      'id': 'OPERATION'
+    },
+    {
+      'name': 'Inmueble',
+      'value_id': '242062',
+      'value_name': 'Departamento',
+      'value_struct': None,
+      'values': [
+        {
+          'id': '242062',
+          'name': 'Departamento',
+          'struct': None,
+          'source': 1
+        }
+      ],
+      'attribute_group_id': 'MAIN',
+      'attribute_group_name': 'Principales',
+      'id': 'PROPERTY_TYPE',
+      'source': 1,
+      'value_type': 'list'
+    },
+    {
+      'id': 'ITEM_CONDITION',
+      'values': [
+        {
+          'id': '2230284',
+          'name': 'Nuevo',
+          'struct': None,
+          'source': 1
+        }
+      ],
+      'value_type': 'list',
+      'source': 1,
+      'name': 'Condición del ítem',
+      'value_id': '2230284',
+      'value_name': 'Nuevo',
+      'value_struct': None,
+      'attribute_group_id': 'OTHERS',
+      'attribute_group_name': 'Otros'
+    },
+    {
+      'id': 'WITH_VIRTUAL_TOUR',
+      'value_struct': None,
+      'values': [
+        {
+          'name': 'Sí',
+          'struct': None,
+          'source': 942334329061206,
+          'id': '242085'
+        }
+      ],
+      'name': 'Tour virtual',
+      'value_id': '242085',
+      'value_name': 'Sí',
+      'attribute_group_id': 'OTHERS',
+      'attribute_group_name': 'Otros',
+      'source': 942334329061206,
+      'value_type': 'boolean'
+    }
+  ],
+  'original_price': None,
+  'category_id': 'MLA401686',
+  'official_store_id': None,
+  'domain_id': 'MLA-INDIVIDUAL_APARTMENTS_FOR_SALE',
+  'catalog_product_id': None,
+  'tags': [
+    'good_quality_picture',
+    'good_quality_thumbnail'
+  ],
+  'order_backend': 1,
+  'use_thumbnail_id': True,
+  'offer_score': None,
+  'offer_share': None,
+  'match_score': None,
+  'winner_item_id': None,
+  'melicoin': None,
+  'discounts': None,
+  'inventory_id': None
+}
+
