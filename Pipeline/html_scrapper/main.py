@@ -1,5 +1,5 @@
-import time
-import logging
+#import time
+#import logging
 
 from html_manager import Html_Manager
 

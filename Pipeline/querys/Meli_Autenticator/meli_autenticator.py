@@ -89,4 +89,6 @@ class Meli_Autenticator:
         self.persist_tokens(response)
 
     def get_access_token(self):
+        if not self.token_fresh():
+            self.refresh_access_token()
         return self.access_token

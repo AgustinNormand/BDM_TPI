@@ -27,15 +27,16 @@ class Query_Processor():
             sub='resources-sub',
         )
 
-        ma = Meli_Autenticator(fresh_start=False)
+        self.ma = Meli_Autenticator(fresh_start=False)
 
-        self.headers = {"Authorization": "Bearer {}".format(ma.get_access_token())}
+        self.headers = {"Authorization": "Bearer {}".format(self.ma.get_access_token())}
 
         self.rp = Records_Processor(self.logger)
 
         self.loop()
 
     def new_message_callback(self, message):
+        self.headers = {"Authorization": "Bearer {}".format(self.ma.get_access_token())}
         self.logger.info("New message {}".format(message))
         encoding = 'utf-8'
         try:

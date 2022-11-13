@@ -4,7 +4,23 @@ import lxml.html
 
 class Spec_Table_Processor():
     def __init__(self):
-        pass
+        self.common_attributes = ['Superficie total',
+                                  'Superficie cubierta',
+                                  'Ambientes',
+                                  'Dormitorios',
+                                  'Baños',
+                                  'Cocheras',
+                                  'Cantidad de pisos',
+                                  'Disposición',
+                                  'Antigüedad',
+                                  'Expensas',
+                                  'Departamentos por piso',
+                                  'Número de piso de la unidad',
+                                  'Orientación',
+                                  'Tipo de departamento',
+                                  'Bodegas',
+                                  'Tipo de casa',
+                                  'Superficie de terreno']
 
     def process_specs_table(self, request_text):
         parsed = lxml.html.fromstring(request_text)
@@ -16,6 +32,9 @@ class Spec_Table_Processor():
         key_values = {}
         for value in zip(keys, values):
             key_values[value[0].text] = value[1].text
+        for key in self.common_attributes:
+            if key not in key_values.keys():
+                key_values[key] = None
         return key_values
 
     def contains_specs_table(self, request_text):

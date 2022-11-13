@@ -76,7 +76,7 @@ class Records_Processor():
                 self.logger.info("Development real state ignored")
                 continue
             processed_result = self.process_record(result, self.common_attributes)
-            processed_records.append(processed_result)
+            processed_records.append(processed_result) # Podría ya publicarlos en vez de hacer el append
             #self.logger.info("{}".format(result))
             #self.logger.info("{}".format(processed_result))
             #break # TODO Guardar en algun lado

@@ -1,8 +1,9 @@
 import lxml.html
 
 class Description_Processor():
-    def __init__(self):
-        pass
 
     def process_description(self, request_text):
-        pass
+        parsed = lxml.html.fromstring(request_text)
+        description = str(parsed.find_class("ui-pdp-description__content")[0].text_content())
+        description = description.replace("\r", "").replace("\n", "").replace("\r\n", "")
+        return description
