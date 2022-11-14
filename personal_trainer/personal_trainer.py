@@ -24,7 +24,7 @@ parameters = {}
 
 pre_parameters = {}
 pre_parameters['n_estimators'] = [1, 15, 2]
-pre_parameters['min_samples_split'] = [1, 10, 2]
+pre_parameters['min_samples_split'] = [2, 10, 2]
 pre_parameters['min_samples_leaf'] = [1, 7, 2]
 
 for key in pre_parameters:
@@ -34,7 +34,8 @@ for key in pre_parameters:
         final_list.append(i)
     parameters[key] = final_list
 
-
+#parameters["tree"] = ["RFRegressor", "RFClassifier", "MultipleRFRegressor", "MRFRegressorRooms"]
+parameters["tree"] = ["RFRegressor"]
 
 
 all_keys = sorted(parameters)
@@ -45,13 +46,12 @@ for combination in list(combinations):
     message["features"] = list(data.columns)
     message["grid"] = {}
     for key, value in list(zip(parameters.keys(), list(combination))):
-        message["grid"][key] = value
+        message["grid"][key] = [value]
     encoding = 'utf-8'
     encoded_resource = json.dumps(message)
     encoded_message = encoded_resource.encode(encoding)
     future = publisher.publish(topic_name, encoded_message)
     future.result()
-    break
 
 #for resource in resources:
 #    encoding = 'utf-8'
