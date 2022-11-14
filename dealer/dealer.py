@@ -1,10 +1,6 @@
 from google.cloud import pubsub_v1
-from google.cloud import storage
-import pandas as pd
 import json
 from datetime import datetime, timedelta
-import os.path
-import itertools as it
 
 best_precision = -1
 best_combination = {}
