@@ -4,6 +4,9 @@ import pandas as pd
 import json
 import os.path
 import itertools as it
+from flask import Flask
+
+app = Flask(__name__)
 
 if not os.path.isfile("x_train.csv"):
     storage_client = storage.Client()
@@ -23,9 +26,9 @@ publisher = pubsub_v1.PublisherClient()
 parameters = {}
 
 pre_parameters = {}
-pre_parameters['n_estimators'] = [1, 15, 2]
-pre_parameters['min_samples_split'] = [2, 10, 2]
-pre_parameters['min_samples_leaf'] = [1, 7, 2]
+pre_parameters['n_estimators'] = [50, 3000, 50]
+#pre_parameters['min_samples_split'] = [2, 10, 2]
+#pre_parameters['min_samples_leaf'] = [1, 7, 2]
 
 for key in pre_parameters:
     final_list = []
@@ -41,20 +44,20 @@ parameters["tree"] = ["RFRegressor"]
 all_keys = sorted(parameters)
 combinations = it.product(*(parameters[key] for key in all_keys))
 
-for combination in list(combinations):
-    message = {}
-    message["features"] = list(data.columns)
-    message["grid"] = {}
-    for key, value in list(zip(parameters.keys(), list(combination))):
-        message["grid"][key] = [value]
-    encoding = 'utf-8'
-    encoded_resource = json.dumps(message)
-    encoded_message = encoded_resource.encode(encoding)
-    future = publisher.publish(topic_name, encoded_message)
-    future.result()
+@app.route("/start")
+def send_combinations():
+    for combination in list(combinations):
+        message = {}
+        message["features"] = list(data.columns)
+        message["grid"] = {}
+        for key, value in list(zip(parameters.keys(), list(combination))):
+            message["grid"][key] = [value]
+        encoding = 'utf-8'
+        encoded_resource = json.dumps(message)
+        encoded_message = encoded_resource.encode(encoding)
+        future = publisher.publish(topic_name, encoded_message)
+        future.result()
+    return "Executed (:"
 
-#for resource in resources:
-#    encoding = 'utf-8'
-#    encoded_resource = resource.encode(encoding)
-#    future = publisher.publish(topic_name, encoded_resource)
-#    future.result()
+if __name__ == "__main__":
+    app.run(debug=False, host="0.0.0.0")

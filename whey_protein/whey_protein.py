@@ -4,12 +4,9 @@ import pandas as pd
 import os
 import json
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score
-from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error,  mean_absolute_error
 from math import sqrt
-
 
 if not os.path.isfile("x_train.csv") or not os.path.isfile("y_train.csv") or not os.path.isfile("x_test.csv") or not os.path.isfile("y_test.csv"):
     storage_client = storage.Client()
@@ -41,9 +38,6 @@ topic_name = 'projects/{project_id}/topics/{topic}'.format(
 
 def callback(message):
 	try:
-		encoding = 'utf-8'
-		decoded_message = json.loads(message.data.decode(encoding))
-		
 		features = decoded_message["features"]
 		print("Features: {}".format(features))
 		grid = decoded_message["grid"]
@@ -68,8 +62,8 @@ def callback(message):
 		message.nack()
 		
 def rf_regressor(grid, x_test, x_train):
-	rf = RandomForestRegressor(n_jobs=-1, verbose=2)
-	rf_random = GridSearchCV(estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = -1)
+	rf = RandomForestRegressor(n_jobs=1, verbose=2)
+	rf_random = GridSearchCV(estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = 1)
 	rf_random.fit(x_train, y_train_original)		
 	
 	y_pred = rf_random.predict(x_test)
@@ -88,8 +82,6 @@ def rf_regressor(grid, x_test, x_train):
 	results["rmse"] = rmse
 		
 	return results
-	
 
-future = pubsub_v1.SubscriberClient().subscribe(subscription_name, callback, pubsub_v1.types.FlowControl(max_messages=1))
-future.result()
+
 

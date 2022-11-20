@@ -20,6 +20,22 @@ docker service create \
   --name=resources \
   agustinnormand/resources:8
 
+docker service create \
+  --mode global \
+  --name=whey_protein \
+  agustinnormand/whey_protein:2
+
+docker service create \
+  --replicas 1 \
+  --publish published=5000,target=5000 \
+  --name=personal_trainer \
+  agustinnormand/personal_trainer:2
+
+docker service create \
+  --replicas 1 \
+  --name=dealer \
+  agustinnormand/dealer:3
+
 # Update to new image
 Va actualizando de uno en uno
 docker service update --image agustinnormand/resources:6 resources

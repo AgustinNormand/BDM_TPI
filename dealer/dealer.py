@@ -32,12 +32,13 @@ def callback(message):
         reset_execution()
     last_message_timestamp = datetime.today()
     data = json.loads(message.data.decode("utf-8"))
-    print(data)
+    #print(data)
     results = data["results"]
     mae = results["mae"]
     if mae > best_precision:
         best_precision = mae
         best_combination = data
+        print("New best found {}".format(data))
     message.ack()
 
 future = subscriber.subscribe(topic_name, callback)
