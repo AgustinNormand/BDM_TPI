@@ -1,6 +1,4 @@
 import base64
-
-#
 from google.cloud import pubsub_v1
 from google.cloud import storage
 import pandas as pd
