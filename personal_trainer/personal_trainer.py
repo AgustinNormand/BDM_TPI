@@ -4,9 +4,6 @@ import pandas as pd
 import json
 import os.path
 import itertools as it
-from flask import Flask
-
-app = Flask(__name__)
 
 if not os.path.isfile("x_train.csv"):
     storage_client = storage.Client()
@@ -44,7 +41,6 @@ parameters["tree"] = ["RFRegressor"]
 all_keys = sorted(parameters)
 combinations = it.product(*(parameters[key] for key in all_keys))
 
-@app.route("/start")
 def send_combinations():
     for combination in list(combinations):
         message = {}
@@ -57,7 +53,7 @@ def send_combinations():
         encoded_message = encoded_resource.encode(encoding)
         future = publisher.publish(topic_name, encoded_message)
         future.result()
+        break
     return "Executed (:"
 
-if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0")
+send_combinations()

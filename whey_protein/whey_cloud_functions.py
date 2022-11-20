@@ -5,12 +5,12 @@ import pandas as pd
 import os
 import json
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import mean_squared_error,  mean_absolute_error
 from math import sqrt
 
 def download_files_if_needed():
-	if not os.path.isfile("x_train.csv") or not os.path.isfile("y_train.csv") or not os.path.isfile("x_test.csv") or not os.path.isfile("y_test.csv"):
+	if not os.path.isfile("/tmp/x_train.csv") or not os.path.isfile("/tmp/y_train.csv") or not os.path.isfile("/tmp/x_test.csv") or not os.path.isfile("/tmp/y_test.csv"):
 		storage_client = storage.Client()
 		bucket = storage_client.bucket("bdm-unlu")
 		blob = bucket.blob("21_train-test-split/x_train.csv")
@@ -30,11 +30,6 @@ def download_files_if_needed():
 	return [x_train_original, x_test_original, y_train_original, y_test_original]
 
 def hello_pubsub(event, context):
-	"""Triggered from a message on a Cloud Pub/Sub topic.
-    Args:
-         event (dict): Event payload.
-         context (google.cloud.functions.Context): Metadata for the event.
-    """
 	x_train_original, x_test_original, y_train_original, y_test_original = download_files_if_needed()
 
 	decoded_message = json.loads(base64.b64decode(event['data']).decode('utf-8'))
@@ -63,11 +58,11 @@ def hello_pubsub(event, context):
 	future.result()
 
 def rf_regressor(grid, x_test, x_train, y_train_original, y_test_original):
-	rf = RandomForestRegressor(n_jobs=-1, verbose=2)
-	rf_random = GridSearchCV(estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = -1)
+	rf = RandomForestRegressor(n_jobs=-1, verbose=2 asd asd=)
+	rf_random = RandomizedSearchCV(rf, grid, cv = 5, verbose=2, n_jobs = -1, n_iter=100)
 	rf_random.fit(x_train, y_train_original)
 
-	y_pred = rf_random.predict(x_test)estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = -1)
+	y_pred = rf_random.predict(x_test)
 
 	results = {}
 	mae = mean_absolute_error(y_test_original, y_pred)
