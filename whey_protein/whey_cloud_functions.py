@@ -43,8 +43,8 @@ def hello_pubsub(event, context):
 	fold_number = 0
 	for train_index, validation_index in kf.split(train):
 		if fold_number == my_fold:
-			new_train = train[train_index]
-			validation = train[validation_index]
+			new_train = train.iloc[train_index]
+			validation = train.iloc[validation_index]
 			break
 		else:
 			fold_number += 1
