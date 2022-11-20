@@ -5,48 +5,58 @@ import pandas as pd
 import os
 import json
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error,  mean_absolute_error
 from math import sqrt
+from sklearn.model_selection import KFold
 
 def download_files_if_needed():
-	if not os.path.isfile("/tmp/x_train.csv") or not os.path.isfile("/tmp/y_train.csv") or not os.path.isfile("/tmp/x_test.csv") or not os.path.isfile("/tmp/y_test.csv"):
+	if not os.path.isfile("/tmp/train.csv"):
 		storage_client = storage.Client()
 		bucket = storage_client.bucket("bdm-unlu")
-		blob = bucket.blob("21_train-test-split/x_train.csv")
-		blob.download_to_filename("/tmp/x_train.csv")
-		blob = bucket.blob("21_train-test-split/y_train.csv")
-		blob.download_to_filename("/tmp/y_train.csv")
-		blob = bucket.blob("21_train-test-split/x_test.csv")
-		blob.download_to_filename("/tmp/x_test.csv")
-		blob = bucket.blob("21_train-test-split/y_test.csv")
-		blob.download_to_filename("/tmp/y_test.csv")
+		blob = bucket.blob("21_train-test-split/train.csv")
+		blob.download_to_filename("/tmp/train.csv")
 
-	x_train_original = pd.read_csv("/tmp/x_train.csv")
-	x_test_original = pd.read_csv("/tmp/x_test.csv")
-	y_train_original = pd.read_csv("/tmp/y_train.csv")
-	y_test_original = pd.read_csv("/tmp/y_test.csv")
-
-	return [x_train_original, x_test_original, y_train_original, y_test_original]
+	train = pd.read_csv("/tmp/train.csv")
+	
+	return train
 
 def hello_pubsub(event, context):
-	x_train_original, x_test_original, y_train_original, y_test_original = download_files_if_needed()
+	train = download_files_if_needed()
 
 	decoded_message = json.loads(base64.b64decode(event['data']).decode('utf-8'))
 
 	print(decoded_message)
 	features = decoded_message["features"]
 	print("Features: {}".format(features))
+	
+	my_fold = decoded_message["fold"]
+	n_splits = decoded_message["n_splits"]
 	grid = decoded_message["grid"]
 	tree = grid["tree"]
 	grid.pop("tree")
+	
 	print("Tree: {}".format(tree))
 	print("Grid: {}".format(grid))
-	x_train = x_train_original[features]
-	x_test = x_test_original[features]
+
+	kf = KFold(n_splits=n_splits)
+	fold_number = 0
+	for train_index, validation_index in kf.split(train):
+		if fold_number == my_fold:
+			new_train = train[train_index]
+			validation = train[validation_index]
+			break
+		else:
+			fold_number += 1
+
+	x_train = new_train[features]
+	y_train = new_train["price"]
+
+	x_validation = validation[features]
+	y_validation = validation["price"]
 
 	if tree == ['RFRegressor']:
-		decoded_message["results"] = rf_regressor(grid, x_test, x_train, y_train_original, y_test_original)
+		decoded_message["results"] = rf_regressor(grid, x_train, y_train, x_validation, y_validation)
 
 	encoded_message = json.dumps(decoded_message).encode('utf-8')
 
@@ -57,17 +67,17 @@ def hello_pubsub(event, context):
 	future = pubsub_v1.PublisherClient().publish(topic_name, encoded_message)
 	future.result()
 
-def rf_regressor(grid, x_test, x_train, y_train_original, y_test_original):
-	rf = RandomForestRegressor(n_jobs=-1, verbose=2 asd asd=)
-	rf_random = RandomizedSearchCV(rf, grid, cv = 5, verbose=2, n_jobs = -1, n_iter=100)
-	rf_random.fit(x_train, y_train_original)
+def rf_regressor(grid, x_train, y_train, x_validation, y_validation):
+	rf = RandomForestRegressor(n_jobs=-1, verbose=2)
+	rf.set_params(**grid)
+	rf.fit(x_train, y_train)
 
-	y_pred = rf_random.predict(x_test)
+	y_pred = rf.predict(x_validation)
 
 	results = {}
-	mae = mean_absolute_error(y_test_original, y_pred)
+	mae = mean_absolute_error(y_validation, y_pred)
 	results["mae"] = mae
-	mse = mean_squared_error(y_test_original, y_pred)
+	mse = mean_squared_error(y_validation, y_pred)
 	results["mse"] = mse
 	rmse = sqrt(mse)
 
