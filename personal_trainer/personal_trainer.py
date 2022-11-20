@@ -5,6 +5,8 @@ import json
 import os.path
 import itertools as it
 
+N_SPLITS = 5
+
 if not os.path.isfile("x_train.csv"):
     storage_client = storage.Client()
     bucket = storage_client.bucket("bdm-unlu")
@@ -43,16 +45,19 @@ combinations = it.product(*(parameters[key] for key in all_keys))
 
 def send_combinations():
     for combination in list(combinations):
-        message = {}
-        message["features"] = list(data.columns)
-        message["grid"] = {}
-        for key, value in list(zip(parameters.keys(), list(combination))):
-            message["grid"][key] = [value]
-        encoding = 'utf-8'
-        encoded_resource = json.dumps(message)
-        encoded_message = encoded_resource.encode(encoding)
-        future = publisher.publish(topic_name, encoded_message)
-        future.result()
+        for split in range(N_SPLITS):
+            message = {}
+            message["features"] = list(data.columns)
+            message["fold"] = split
+            message["n_splits"] = N_SPLITS
+            message["grid"] = {}
+            for key, value in list(zip(parameters.keys(), list(combination))):
+                message["grid"][key] = [value]
+            encoding = 'utf-8'
+            encoded_resource = json.dumps(message)
+            encoded_message = encoded_resource.encode(encoding)
+            future = publisher.publish(topic_name, encoded_message)
+            future.result()
         break
     return "Executed (:"
 
