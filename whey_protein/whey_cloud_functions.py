@@ -11,12 +11,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error,  mean_absolute_error
 from math import sqrt
 
-def hello_pubsub(event, context):
-	"""Triggered from a message on a Cloud Pub/Sub topic.
-    Args:
-         event (dict): Event payload.
-         context (google.cloud.functions.Context): Metadata for the event.
-    """
+def download_files_if_needed():
 	if not os.path.isfile("x_train.csv") or not os.path.isfile("y_train.csv") or not os.path.isfile("x_test.csv") or not os.path.isfile("y_test.csv"):
 		storage_client = storage.Client()
 		bucket = storage_client.bucket("bdm-unlu")
@@ -30,8 +25,19 @@ def hello_pubsub(event, context):
 		blob.download_to_filename("/tmp/y_test.csv")
 
 	x_train_original = pd.read_csv("/tmp/x_train.csv")
-
 	x_test_original = pd.read_csv("/tmp/x_test.csv")
+	y_train_original = pd.read_csv("/tmp/y_train.csv")
+	y_test_original = pd.read_csv("/tmp/y_test.csv")
+
+	return [x_train_original, x_test_original, y_train_original, y_test_original]
+
+def hello_pubsub(event, context):
+	"""Triggered from a message on a Cloud Pub/Sub topic.
+    Args:
+         event (dict): Event payload.
+         context (google.cloud.functions.Context): Metadata for the event.
+    """
+	x_train_original, x_test_original, y_train_original, y_test_original = download_files_if_needed()
 
 	decoded_message = json.loads(base64.b64decode(event['data']).decode('utf-8'))
 
@@ -47,7 +53,7 @@ def hello_pubsub(event, context):
 	x_test = x_test_original[features]
 
 	if tree == ['RFRegressor']:
-		decoded_message["results"] = rf_regressor(grid, x_test, x_train)
+		decoded_message["results"] = rf_regressor(grid, x_test, x_train, y_train_original, y_test_original)
 
 	encoded_message = json.dumps(decoded_message).encode('utf-8')
 
@@ -58,14 +64,12 @@ def hello_pubsub(event, context):
 	future = pubsub_v1.PublisherClient().publish(topic_name, encoded_message)
 	future.result()
 
-def rf_regressor(grid, x_test, x_train):
-	y_train_original = pd.read_csv("/tmp/y_train.csv")
-	y_test_original = pd.read_csv("/tmp/y_test.csv")
+def rf_regressor(grid, x_test, x_train, y_train_original, y_test_original):
 	rf = RandomForestRegressor(n_jobs=-1, verbose=2)
 	rf_random = GridSearchCV(estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = -1)
 	rf_random.fit(x_train, y_train_original)
 
-	y_pred = rf_random.predict(x_test)
+	y_pred = rf_random.predict(x_test)estimator = rf, param_grid = grid, cv = 5, verbose=2, n_jobs = -1)
 
 	results = {}
 	mae = mean_absolute_error(y_test_original, y_pred)
