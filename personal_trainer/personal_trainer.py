@@ -52,7 +52,7 @@ def send_combinations():
             message["n_splits"] = N_SPLITS
             message["grid"] = {}
             for key, value in list(zip(parameters.keys(), list(combination))):
-                message["grid"][key] = [value]
+                message["grid"][key] = value
             encoding = 'utf-8'
             encoded_resource = json.dumps(message)
             encoded_message = encoded_resource.encode(encoding)
