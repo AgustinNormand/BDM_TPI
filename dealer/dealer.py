@@ -46,14 +46,13 @@ def callback(message):
     results = data["results"]
 
     for key in data:
-        #if type(data[key]) is dict:
-        #    for subkey in data[key]:
-        #        if not subkey in output_data:
-        #            output_data[subkey] = [data[key][subkey]]
-        #        else:
-        #            output_data[subkey].append(data[key][subkey])
-        #else:
-        if key not in output_data:
+        if key == "results":
+            for subkey in data[key]:
+                if subkey not in output_data:
+                    output_data[subkey] = [data[key][subkey]]
+                else:
+                    output_data[subkey].append(data[key][subkey])
+        elif key not in output_data:
             output_data[key] = [data[key]]
         else:
             output_data[key].append(data[key])
