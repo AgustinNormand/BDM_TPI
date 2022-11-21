@@ -58,7 +58,7 @@ def send_combinations():
             encoded_message = encoded_resource.encode(encoding)
             future = publisher.publish(topic_name, encoded_message)
             future.result()
-        break
+        #break
     return "Executed (:"
 
 send_combinations()

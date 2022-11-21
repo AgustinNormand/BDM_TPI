@@ -1,8 +1,10 @@
 from google.cloud import pubsub_v1
+from google.cloud import storage
 import json
 from datetime import datetime, timedelta
 import threading
 import pandas as pd
+import time
 
 last_message_timestamp = datetime.today()
 
@@ -15,35 +17,41 @@ topic_name = 'projects/{project_id}/subscriptions/{sub}'.format(
 
 subscriber = pubsub_v1.SubscriberClient()
 
-class BackgroundTasks(threading.Thread):
-    def run(self,*args,**kwargs):
-        while True:
-            if old_execution_is_done():
-                print("Old execution is done")
-                save_and_upload_results()
-                break
-            print("Execution is still going")                
-            time.sleep(30)
+def old_execution_is_done():
+    return datetime.today() > last_message_timestamp + timedelta(minutes=3)
 
-    def save_and_upload_results():
-        pd.from_dict(output_data).to_csv("whey_results.csv")
+class BackgroundTasks(threading.Thread):
+    def save_and_upload_results(self):
+        pd.DataFrame.from_dict(output_data).to_csv("whey_results.csv")
         storage_client = storage.Client()
         bucket = storage_client.bucket("bdm-unlu")
         blob = bucket.blob('whey_results.csv')
         blob.upload_from_filename('whey_results.csv')
 
-def old_execution_is_done():
-    return datetime.today() > last_message_timestamp + timedelta(minutes=3)
+    def run(self,*args,**kwargs):
+        while True:
+            if old_execution_is_done():
+                print("Old execution is done")
+                self.save_and_upload_results()
+                break
+            print("Execution is still going")                
+            time.sleep(30)
+
+t = BackgroundTasks().start()
+
+
 
 
 def callback(message):
+    print("New message")
     global best_precision
     global last_message_timestamp
     global best_combination
     global output_data
     last_message_timestamp = datetime.today()
     data = json.loads(message.data.decode("utf-8"))
-    results = data["results"]
+    print(data)
+    #results = data["results"]
 
     for key in data:
         #if type(data[key]) is dict:
