@@ -55,7 +55,7 @@ def hello_pubsub(event, context):
 	x_validation = validation[features]
 	y_validation = validation["price"]
 
-	if tree == ['RFRegressor']:
+	if tree == 'RFRegressor':
 		decoded_message["results"] = rf_regressor(grid, x_train, y_train, x_validation, y_validation)
 
 	encoded_message = json.dumps(decoded_message).encode('utf-8')
