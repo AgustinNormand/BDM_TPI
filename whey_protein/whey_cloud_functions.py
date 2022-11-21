@@ -5,10 +5,10 @@ import pandas as pd
 import os
 import json
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error,  mean_absolute_error
 from math import sqrt
 from sklearn.model_selection import KFold
+
 
 def download_files_if_needed():
 	if not os.path.isfile("/tmp/train.csv"):
@@ -21,7 +21,8 @@ def download_files_if_needed():
 	
 	return train
 
-def hello_pubsub(event, context):
+
+def hello_pubsub(event, _):
 	train = download_files_if_needed()
 
 	decoded_message = json.loads(base64.b64decode(event['data']).decode('utf-8'))
@@ -39,6 +40,8 @@ def hello_pubsub(event, context):
 	print("Tree: {}".format(tree))
 	print("Grid: {}".format(grid))
 
+	new_train = None  # Para que no tire un warning que tiraba
+	validation = None  # Para que no tire un warning que tiraba
 	kf = KFold(n_splits=n_splits)
 	fold_number = 0
 	for train_index, validation_index in kf.split(train):
@@ -67,6 +70,7 @@ def hello_pubsub(event, context):
 	future = pubsub_v1.PublisherClient().publish(topic_name, encoded_message)
 	future.result()
 
+
 def rf_regressor(grid, x_train, y_train, x_validation, y_validation):
 	rf = RandomForestRegressor(n_jobs=-1, verbose=2)
 	rf.set_params(**grid)
@@ -88,3 +92,11 @@ def rf_regressor(grid, x_train, y_train, x_validation, y_validation):
 	results["rmse"] = rmse
 
 	return results
+
+
+def rf_regressor_neighborhood(grid, x_train, y_train, x_validation, y_validation):
+	pass
+
+
+def rf_regressor_neighborhood_rooms(grid, x_train, y_train, x_validation, y_validation):
+	pass
