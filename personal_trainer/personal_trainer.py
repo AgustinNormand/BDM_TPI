@@ -25,9 +25,9 @@ publisher = pubsub_v1.PublisherClient()
 parameters = {}
 
 pre_parameters = {}
-pre_parameters['n_estimators'] = [50, 3000, 50]
-#pre_parameters['min_samples_split'] = [2, 10, 2]
-#pre_parameters['min_samples_leaf'] = [1, 7, 2]
+pre_parameters['n_estimators'] = [50, 1000, 50]
+pre_parameters['min_samples_split'] = [2, 8, 2]
+pre_parameters['min_samples_leaf'] = [1, 8, 2]
 
 for key in pre_parameters:
     final_list = []
@@ -38,21 +38,27 @@ for key in pre_parameters:
 
 #parameters["tree"] = ["RFRegressor", "RFClassifier", "MultipleRFRegressor", "MRFRegressorRooms"]
 parameters["tree"] = ["RFRegressor"]
+parameters["criterion"] = ["squared_error", "absolute_error"]
+parameters["max_features"] = ["sqrt"]
+
 
 
 all_keys = sorted(parameters)
 combinations = it.product(*(parameters[key] for key in all_keys))
 
+#print("Parameters Keys {}".format(all_keys))
 def send_combinations():
     for combination in list(combinations):
+        #print("Combination: {}".format(combination))
         for split in range(N_SPLITS):
             message = {}
             message["features"] = list(data.columns)
             message["fold"] = split
             message["n_splits"] = N_SPLITS
             message["grid"] = {}
-            for key, value in list(zip(parameters.keys(), list(combination))):
+            for key, value in list(zip(all_keys, list(combination))):
                 message["grid"][key] = value
+            print("Message: {}".format(message))
             encoding = 'utf-8'
             encoded_resource = json.dumps(message)
             encoded_message = encoded_resource.encode(encoding)
