@@ -5,6 +5,10 @@
 <img src="Imagenes/logo-universidad-nacional-de-lujan.png" alt="UNLu">
 </p>
 
+<p align="center">
+Predicción de precios de inmuebles en C.A.B.A mediante técnicas de aprendizaje automático.
+</p>
+
 <p>
-Predicción de precios de inmuebles en C.A.B.A mediante técnicas de aprendizaje automático. Ver trabajo completo en: https://github.com/AgustinNormand/BDM_TPI/blob/main/Rapaport___Normand.pdf
+Ver trabajo completo en: https://github.com/AgustinNormand/BDM_TPI/blob/main/Rapaport___Normand.pdf
 </p>
