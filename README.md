@@ -9,6 +9,6 @@
 Predicción de precios de inmuebles en C.A.B.A mediante técnicas de aprendizaje automático.
 </p>
 
-<p>
+<p align="center">
 Ver trabajo completo en: https://github.com/AgustinNormand/BDM_TPI/blob/main/Rapaport___Normand.pdf
 </p>
